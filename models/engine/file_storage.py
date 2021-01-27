@@ -57,26 +57,6 @@ class FileStorage:
         except:
             pass
 
-    def get(self, cls, id):
-        """ A method to retrieve one object """        
-        for key, value in self.__objects.items():
-            if cls == value.__class__ or cls == value.__class__.__name__:
-                return value
-
-    def count(self, cls=None):
-        """ Returns the number of objects
-        in storage matching the given class """
-        count = 0
-        if cls:
-            for key, value in self.__objects.items():
-                if cls == value.__class__ or cls == value.__class__.__name__:
-                    count = count + 1
-        elif cls is None:
-            for key, value in self.__objects.items():
-                count = count + 1
-        return count
-
-
     def delete(self, obj=None):
         """delete obj from __objects if it’s inside"""
         if obj is not None:
@@ -87,3 +67,15 @@ class FileStorage:
     def close(self):
         """call reload() method for deserializing the JSON file to objects"""
         self.reload()
+
+    def get(self, cls, id):
+        """Retrieve an object, if not exist return None"""
+        objs = self.all()
+        fm = '{}.{}'.format(cls.__name__, str(id))
+        return objs.get(fm)
+
+    def count(self, cls=None):
+        """Count the number of objects in storage"""
+        if cls:
+            return len(self.all(cls))
+        return len(self.all())
