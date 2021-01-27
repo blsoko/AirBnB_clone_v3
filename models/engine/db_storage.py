@@ -59,6 +59,30 @@ class DBStorage:
         """commit all changes of the current database session"""
         self.__session.commit()
 
+    def get(self, cls, id):
+        """ A method to retrieve one object """
+        for clss in classes:
+            if cls is classes[clss] or cls is clss:
+                return self.all().get("{}.{}".format(clss, id))
+
+    def count(self, cls=None):
+        """ Returns the number of objects
+        in storage matching the given class """
+        count = 0
+        if cls:
+            for clss in classes:
+                if cls is classes[clss] or cls is clss:
+                    objs = self.__session.query(classes[clss]).all()
+                    for obj in objs:
+                        count = count + 1
+        if cls is None:
+            for clss in classes:
+                objs = self.__session.query(classes[clss]).all()
+                for obj in objs:
+                    count = count + 1
+        return (count)
+
+
     def delete(self, obj=None):
         """delete from the current database session obj if not None"""
         if obj is not None:
@@ -71,18 +95,7 @@ class DBStorage:
         Session = scoped_session(sess_factory)
         self.__session = Session
 
+
     def close(self):
         """call remove() method on the private session attribute"""
         self.__session.remove()
-
-    def get(self, cls, id):
-        """Retrieve an object, if no exist return None"""
-        objs = self.all()
-        fm = '{}.{}'.format(cls.__name__, str(id))
-        return objs.get(fm)
-
-    def count(self, cls=None):
-        """Count the number of the objects in storage"""
-        if cls:
-            return len(self.all(cls))
-        return len(self.all())
