@@ -18,7 +18,7 @@ def amenities_view(amenity_id=None):
         tmp = storage.get(Amenity, amenity_id)
         if tmp is None:
             abort(404)
-        return jsonify(tm.to_dict())
+        return jsonify(tmp.to_dict())
     else:
         amenities = [val.to_dict() for val in storage.all(Amenity).values()]
         return jsonify(amenities)

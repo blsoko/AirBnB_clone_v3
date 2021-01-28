@@ -4,25 +4,34 @@ from flask import Flask, make_response, request, abort
 from api.v1.views import app_views
 from models import storage
 from models.city import City
+from models.state import State
 
 
-@app_views.route("/cities", methods=['GET'], strict_slashes=False)
-@app_views.route("/cities/<cities_id>", methods=['GET'], strict_slashes=False)
-def view_cities(cities_id=None):
-    """Retrieves all state objects"""
-    if cities_id:
-        tmp = storage.get(City, cities_id)
-        if tmp is None:
-            abort(404)
-        return jsonify(tmp.to_dict())
-    else:
-        cities = [val.to_dict() for val in storage.all(City).values()]
-        return jsonify(cities)
-
-
-@app_views.route("/cities/<cities_id>", methods=['DELETE'],
+@app_views.route("/states/<state_id>/cities", methods=['GET'],
                  strict_slashes=False)
-def delete_cities(cities_id):
+def cities_view(state_id):
+    """
+    Retrieves the list of all State objects
+    """
+    tmp = storage.get(State, state_id)
+    if tmp is None:
+        abort(404)
+    cty = [value.to_dict() for value in tmp.cities]
+    return jsonify(cty)
+
+
+@app_views.route("/cities/<city_id>", methods=['GET'], strict_slashes=False)
+def view_cities(city_id):
+    """Retrieves all state objects"""
+    tmp = storage.get(City, cities_id)
+    if tmp is None:
+        abort(404)
+    return jsonify(tmp.to_dict())
+
+
+@app_views.route("/cities/<city_id>", methods=['DELETE'],
+                 strict_slashes=False)
+def delete_cities(city_id):
     """Deletes a City object"""
     tmp = storage.get(City, cities_id)
     if tmp is None:
@@ -39,7 +48,7 @@ def post_cities():
     if content:
         if content.get('name'):
             new_city = State(**content)
-            bew_city.state_id = state_id
+            new_city.state_id = state_id
             new_city.save()
             return jsonify(new_city.to_dict()), 201
         abort(400, "Missing name")
