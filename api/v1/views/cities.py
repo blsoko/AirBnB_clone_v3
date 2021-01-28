@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """View for City objects via API"""
-from flask import Flask, make_response, request, abort
+from flask import Flask, make_response, request, abort, jsonify
 from api.v1.views import app_views
 from models import storage
 from models.city import City
@@ -41,13 +41,13 @@ def delete_cities(city_id):
     return make_response(jsonify({}), 200)
 
 
-@app_views.route("/cities", methods=['POST'], strict_slashes=False)
-def post_cities():
+@app_views.route("/states/<state_id>/cities", methods=['POST'], strict_slashes=False)
+def post_cities(state_id=None):
     """Create a City"""
     content = request.get_json()
     if content:
         if content.get('name'):
-            new_city = State(**content)
+            new_city = City(**content)
             new_city.state_id = state_id
             new_city.save()
             return jsonify(new_city.to_dict()), 201
