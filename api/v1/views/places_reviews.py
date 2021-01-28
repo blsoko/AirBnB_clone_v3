@@ -39,8 +39,8 @@ def delReview(review_id=None):
     """ Del Review response
     """
     place = storage.get(Review, review_id)
-    if review:
-        storage.delete(review)
+    if place:
+        storage.delete(place)
         storage.save()
         return make_response(jsonify({}), 200)
     abort(404)
