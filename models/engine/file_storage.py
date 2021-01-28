@@ -71,7 +71,7 @@ class FileStorage:
     def get(self, cls, id):
         """Retrieve an object, if not exist return None"""
         objs = self.all()
-        fm = '{}.{}'.format(cls.__name__, str(id))
+        fm = '{}.{}'.format(cls.__name__, id)
         return objs.get(fm)
 
     def count(self, cls=None):

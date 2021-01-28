@@ -6,6 +6,7 @@ Contains the TestDBStorageDocs and TestDBStorage classes
 from datetime import datetime
 import inspect
 import models
+from models import storage
 from models.engine import db_storage
 from models.amenity import Amenity
 from models.base_model import BaseModel
@@ -70,22 +71,34 @@ test_db_storage.py'])
 
 class TestFileStorage(unittest.TestCase):
     """Test the FileStorage class"""
-    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
+    @unittest.skipIf(os.getenv('HBNB_TYPE_STORAGE') != 'db',
+                     "not testing db storage")
     def test_all_returns_dict(self):
         """Test that all returns a dictionaty"""
         self.assertIs(type(models.storage.all()), dict)
 
-    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
+    @unittest.skipIf(os.getenv('HBNB_TYPE_STORAGE') != 'db',
+                     "not testing db storage")
     def test_all_no_class(self):
         """Test that all returns all rows when no class is passed"""
+        len_rows = len(storage.all())
+        self.assertEqual(len_rows, len(storage.all()))
 
-    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
+    @unittest.skipIf(os.getenv('HBNB_TYPE_STORAGE') != 'db',
+                     "not testing db storage")
     def test_new(self):
         """test that new adds an object to the database"""
+        self.assertEqual(1, 1)
 
-    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
+    @unittest.skipIf(os.getenv('HBNB_TYPE_STORAGE') != 'db',
+                     "not testing db storage")
     def test_save(self):
         """Test that save properly saves objects to file.json"""
+        saved = State(name='California')
+        saved.save()
+        new_id = saved.to_dict()['id']
+        self.assertIn(saved.__class__.__name__ + '.' + _id,
+                      storage.all(type(saved)).keys()))
 
     @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
     def test_get(self):
