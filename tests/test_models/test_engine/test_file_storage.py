@@ -118,19 +118,46 @@ class TestFileStorage(unittest.TestCase):
             js = f.read()
         self.assertEqual(json.loads(string), json.loads(js))
 
-    @unittest.skipIf(os.getenv('HBNB_TYPE_STORAGE') != 'db',
-                     "not testing file storage")
-    def test_get(self):
-        """Test get method check if we can get the value"""
-        StateTest = State(name="Washington")
-        StateTest.save()
-        self.assertEqual(models.storage.get(State, StateTest.id), StateTest)
+    def test_get_file_st(self):
+        """testing get method with State class"""
+        d1 = {"name": "Test0"}
+        new_state1 = State(**d1)
+        storage.new(new_state1)
+        storage.save()
+        st1 = storage.get(State, new_state1.id)
+        self.assertEqual(new_state1, st1)
 
-    @unittest.skipIf(os.getenv('HBNB_TYPE_STORAGE') != 'db',
-                     "not testing file storage")
-    def test_count(self):
-        """Test count method they have to be the same"""
-        StateTest = State(name="Peru")
-        StateCount = models.storage.count(State)
-        StateTest.save()
-        self.assertEqual(models.storage.count(State), StateCount + 1)
+    def test_get_file_us(self):
+        """testing get method with User class"""
+        d1 = {"email": "email", "password": "password"}
+        new_user1 = User(**d1)
+        storage.new(new_user1)
+        storage.save()
+        us1 = storage.get(User, new_user1.id)
+        self.assertEqual(new_user1, us1)
+
+    def test_get_file_am(self):
+        """testing get method with Amenity class"""
+        d1 = {"name": "name"}
+        new_amenity1 = Amenity(**d1)
+        storage.new(new_amenity1)
+        storage.save()
+        am1 = storage.get(Amenity, new_amenity1.id)
+        self.assertEqual(new_amenity1, am1)
+
+    def test_get_file_id(self):
+        """testing get method with a wrong id"""
+        get_state = storage.get(State, "2456jffghj")
+        self.assertEqual(get_state, None)
+
+    def test_count_file(self):
+        """Testing count method"""
+        len_1 = len(storage.all())
+        count_1 = storage.count()
+        self.assertEqual(len_1, count_1)
+
+    def test_count_db_state(self):
+        """Testing count method for a State class"""
+        len_state = len(storage.all(State))
+        count_state = storage.count(State)
+        self.assertEqual(len_state, count_state)

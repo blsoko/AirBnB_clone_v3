@@ -70,6 +70,8 @@ class FileStorage:
 
     def get(self, cls, id):
         """Retrieve an object, if not exist return None"""
+        if type(cls) is str and cls in classes:
+            cls = classes[cls]
         objs = self.all()
         fm = '{}.{}'.format(cls.__name__, id)
         return objs.get(fm)

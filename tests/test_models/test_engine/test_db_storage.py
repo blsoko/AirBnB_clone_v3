@@ -19,6 +19,7 @@ import json
 import os
 import pep8
 import unittest
+import MySQLdb
 DBStorage = db_storage.DBStorage
 classes = {"Amenity": Amenity, "City": City, "Place": Place,
            "Review": Review, "State": State, "User": User}
@@ -100,17 +101,46 @@ class TestFileStorage(unittest.TestCase):
         self.assertIn(saved.__class__.__name__ + '.' + _id,
                       storage.all(type(saved)).keys()))
 
-    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
-    def test_get(self):
+    def test_get_db_state(self):
         """Test get method check if we can get the value"""
-        StateTest = State(name="Washington")
-        StateTest.save()
-        self.assertEqual(models.storage.get(State, StateTest.id), StateTest)
+        d0 = {"name": "Test0"}
+        new_state0 = State(**d0)
+        storage.new(new_state0)
+        storage.save()
+        st0 = storage.get(State, new_state0.id)
+        self.assertEqual(new_state0, st0)
 
-    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
-    def test_count(self):
-        """Test count method they have to be the same"""
-        StateTest = State(name="Peru")
-        StateCount = models.storage.count(State)
-        StateTest.save()
-        self.assertEqual(models.storage.count(State), StateCount + 1)
+    def test_get_db_amenity(self):
+        """testing get method with class Amenity"""
+        d0 = {"name": "Test0"}
+        new_amenity0 = Amenity(**d0)
+        storage.new(new_amenity0)
+        storage.save()
+        amenity0 = storage.get(Amenity, new_amenity0.id)
+        self.assertEqual(new_amenity0, amenity0)
+
+    def test_get_db_user(self):
+        """testing get method with class User"""
+        d0 = {"email": "email0@", "password": "hdgesdg!"}
+        new_user0 = User(**d0)
+        storage.new(new_user0)
+        storage.save()
+        user0 = storage.get(User, new_user0.id)
+        self.assertEqual(new_user0, user0)
+
+    def test_get_db_id(self):
+        """testing get method with a wrong id"""
+        get_state = storage.get(State, "2456jffghj")
+        self.assertEqual(get_state, None)
+
+    def test_count_db(self):
+        """Testing count method for all classes"""
+        len_0 = len(storage.all())
+        count_0 = storage.count()
+        self.assertEqual(len_0, count_0)
+
+    def test_count_db_state(self):
+        """Testing count method for a State class"""
+        len_state = len(storage.all(State))
+        count_state = storage.count(State)
+        self.assertEqual(len_state, count_state)
