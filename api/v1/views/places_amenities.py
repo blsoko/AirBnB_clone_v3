@@ -16,11 +16,11 @@ def amenities_view_place(place_id):
     if tmp is None:
         abort(404)
     if getenv('HBNB_TYPE_STORAGE') == 'db':
-        list_amenities = [value.to_dict() for value in tmp.amenities]
+        listamenities = [value.to_dict() for value in tmp.amenities]
     if getenv('HBNB_TYPE_STORAGE') != 'db':
-        list_amenities = [storage.get(Amenity,
-                                      val).to_dict() for val in tmp.amenity_ids]
-    return jsonify(list_amenities)
+        listamenities = [storage.get(Amenity,
+                                     val).to_dict() for val in tmp.amenity_ids]
+    return jsonify(listamenities)
 
 
 @app_views.route("/places/<place_id>/amenities/<amenity_id>",
